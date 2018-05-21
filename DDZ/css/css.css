@@ -1,0 +1,569 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    background-image: url('../images/18.png');
+    overflow: hidden;
+    background-size: 100%;
+}
+li{
+    list-style: none;
+}
+.left{
+    width:20%;
+    height: 800px;
+    float: left;
+    /*background: red;*/
+}
+.mid{
+    width:60%;
+    height: 800px;
+    float: left;
+    /*background: blue;*/
+}
+.mid_top{
+    width: 100%;
+    height: 500px;
+    float: left;
+    /*background: #000;*/
+}
+.mid_end{
+    width: 100%;
+    height: 300px;
+    float: left;
+    position: relative;
+    /*background: #fff;*/
+}
+.right{
+    width:20%;
+    height: 800px;
+    float: right;
+    /*background: yellow;*/
+}
+/*扑克数量*/
+.all_poker{
+    width: 121px;
+    height: 159px;
+    margin: 100px auto 0px;
+    position: relative;
+    /*background: #fff;*/
+}
+/*扑克单张*/
+.all_poker li{
+    position: absolute;
+}
+.temp_poker{
+    width: 121px;
+    height: 159px;
+    margin: 100px auto 0px;
+    position: relative;
+}
+/*扑克背面*/
+.back {
+    width:121px;
+    height: 159px;
+    background: url('../images/14.png') -139px -181px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 100;
+    box-shadow:0 0 1px rgba(0,0,0,0.4);
+
+}
+.play_1, .play_2, .play_3{
+    width:121px;
+    height: 159px;
+    margin: 20px auto 0px;
+    position: relative;
+}
+.play_1 li,.play_2 li,.play_3 li{
+    position: absolute;
+}
+/*抢地主出牌按钮组*/
+.btnTotal,.btnTotal2{
+    display: none;
+    width: 300px;
+    margin: 0 auto;
+    position: relative;
+    top: 150px;
+    z-index: 100000;
+}
+
+.btnTotal2{
+    width: 400px;
+}
+/*抢地主按钮*/
+.btnLandlord{
+    width: 120px;
+    height: 52px;
+    position: absolute;
+    background: url("../images/抢地主.png") no-repeat 0px 0px/ 100% 100%;
+}
+/*不枪*/
+.passLand{
+    width: 120px;
+    height: 52px;
+    right: 0;
+    position: absolute;
+    background: url("../images/不叫.png") no-repeat 0px 0px/ 100% auto;
+}
+/*开始游戏按钮*/
+.startGame{
+    margin: 0 auto;
+    /*position: absolute;*/
+    width: 204px;
+    height: 88px;
+    background: url("../images/游戏开始.png");
+}
+/*抢地主倒计时 && 出牌倒计时*/
+.time,.time1{
+    line-height: 100px;
+    text-align: center;
+    font-size: 40px;
+    font-family:'华康雅宋体W9','微软雅黑';
+    width: 84px;
+    height: 95px;
+    color: #555;
+    position: absolute;
+    left: -100px;
+    top: -30px;
+    background: url("../images/倒计时.png");
+}
+/*出牌按钮*/
+.outPoker{
+    width: 120px;
+    height: 52px;
+    position: absolute;
+    background: url("../images/出牌.png") no-repeat 0px 0px/ 100% 100%;
+}
+/*要不起*/
+.passPoker{
+    width: 120px;
+    height: 52px;
+    right: 140px;
+    position: absolute;
+    background: url("../images/不出.png") no-repeat 0px 0px/ 100% auto;
+}
+/*提示按钮*/
+.tip{
+    width: 120px;
+    height: 52px;
+    right: 0px;
+    position: absolute;
+    background: url("../images/绿色背景.png") no-repeat 0px 0px/ 100% auto;
+}
+/*对左右玩家扑克进行旋转角度*/
+.transform1{
+    transform: rotateY(90deg);
+}
+.mid .transform2{
+    transform: rotateY(0deg);
+}
+
+.border{
+    border-radius: 10px;
+    border: #ccc 1px solid;
+}
+/*当前选中的牌*/
+.select0{
+    left: 20px;
+}
+.select1{
+    top:  -20px;
+}
+.select2{
+    left: -20px;
+}
+/*地主牌*/
+.landPoker{
+    width: 250px;
+    height: 120px;
+    position: fixed;
+    border: 5px solid #fff;
+    background: rgba(0,0,0,0.4);
+    /*left: 0;*/
+    top: -120px;
+    margin: 0 auto;
+    border-radius: 0 0 40px 40px;
+}
+.landPoker li{
+    position: absolute;
+}
+
+
+a{
+    cursor: pointer;
+}
+
+
+/*动画*/
+/*动画容器*/
+#effects{
+    position: absolute;
+    /*background: rgba(0,0,0,.2);*/
+    width: 100%;
+    height: 100%;
+    z-index: 3333;
+    display: none;
+}
+#effects div{
+    position: absolute;
+    display: none;
+}
+/*顺子*/
+.straight{
+    width: 500px;
+    height: 400px;
+    left: 42%;
+    top: 20%;
+    background: url("../images/顺子.png") no-repeat 0 0 / 100% 100%;
+}
+/*连对*/
+.evenOn{
+    width: 500px;
+    height: 400px;
+    left: 42%;
+    top: 20%;
+    background: url("../images/连队.png") no-repeat 0 0 / 100% 100%;
+}
+/*火花*/
+.floor{
+    height: 600px;
+    width: 600px;
+    z-index: 9999999;
+    bottom: 0px;
+    background: url("../images/火花.gif")no-repeat center/100%;
+}
+/*飞机*/
+.plane{
+    width: 300px;
+    height: 260px;
+    top: 20%;
+    left: 70%;
+    background: url("../images/飞机.png") no-repeat 0 0 / 100% 100%;
+}
+/*炸弹*/
+.bomb{
+    width: 150px;
+    height: 300px;
+    top: -300px;
+    left: 42%;
+    background: url("../images/炸弹.png") no-repeat 0 0 / 100% 100%;
+}
+/*王炸*/
+.bombKing{
+    width: 250px;
+    height: 450px;
+    top: 500px;
+    left: 42%;
+    background: url("../images/王炸.png") no-repeat 0 0 / 100% 100%;
+}
+/*玩家头像*/
+.play2_Img{
+    display: none;
+    position: absolute;
+    right: 200px;
+    top: 50px;
+    width: 100px;
+    height:  100px;
+    border: 1px solid #ffffcc;
+    border-radius: 50%;
+    background: url("../images/农民头像.png") no-repeat center center /100%;
+}
+.play1_Img{
+    display: none;
+    position: absolute;
+    left: -150px;
+    bottom: -100px;
+
+    width:  100px;
+    height: 100px;
+    border: 1px solid #ffffcc;
+    border-radius: 50%;
+    background: url("../images/农民头像.png") no-repeat center center /100%;
+}
+.play0_Img{
+    display: none;
+    position: absolute;
+    left: 200px;
+    top: 50px;
+    width:  100px;
+    height: 100px;
+    background: url("../images/农民头像.png") no-repeat center center /100%;
+    border: 1px solid #ffffcc;
+    border-radius: 50%;
+}
+/*地主头像*/
+.play_Img{
+    height:  100px;
+    background: url("../images/地主头像.png") no-repeat center center /100%;
+}
+/*积分*/
+.branch{
+    color: #fff;
+    width: 170px;
+    height: 32px;
+    position: absolute;
+    line-height: 32px;
+    text-indent: 1em;
+    left: 120px;
+    top: 70px;
+    background: url("../images/底分背景图.png") no-repeat;
+}
+/*底部积分累计*/
+.bottomTotal{
+    font-size: 20px;
+    text-align: center;
+    line-height: 60px;
+    color: #f5f5f5;
+    width: 400px;
+    height: 60px;
+    background: url("../images/底部分数.png")no-repeat center/70%;
+    position: absolute;
+    bottom: 0;
+    margin: 0 auto;
+}
+
+
+/*开场动画封面*/
+.beginGame{
+    width: 100%;
+    height: 100%;
+    z-index: 666;
+    left: 0;
+    position: relative;
+    background: rgba(0,0,0,.3);
+}
+.getGame{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    transition: transform 1s;
+}
+.farmer{
+    width: 100%;
+    height: 100%;
+    left: -100%;
+    position: absolute;
+    background: url("../images/VS农民.png")  no-repeat center /100% auto;
+}
+.landlord{
+    width: 100%;
+    height: 100%;
+    left: 100%;
+    position: absolute;
+    background: url("../images/VS地主.png")  no-repeat center /100% auto;
+}
+.btnBG{
+
+    /*z-index: 9999;*/
+    /*left: 0;*/
+    /*top:-300px;*/
+    width: 500px;
+    bottom: 180px;
+    position: relative;
+    height: 100px;
+}
+.aboutWe{
+    background: #000;
+    background: url("../images/菜单背景.png") no-repeat center center/100%;
+    position: absolute;
+    z-index: 9999;
+    display: none;
+    left: 0;
+     height: 322px;
+        /*top:-50%;*/
+     width: 415px;
+    overflow: hidden;
+}
+/*游戏结束界面*/
+.gameOver{
+
+    width: 415px;
+    height: 322px;
+    background: url("../images/游戏结束菜单.png")no-repeat center/100%;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    z-index: 999999;
+}
+/*平局弹框*/
+.well{
+    width: 415px;
+    height: 322px;
+    position: absolute;
+    font-size: 50px;
+    text-align: center;
+    line-height: 200px;
+    color: #d3fcff;
+    font-family: '华康雅宋体W9', '微软雅黑';
+}
+/*游戏关闭按钮*/
+.gameChoseBtn{
+    background: url("../images/关闭按钮.png")no-repeat center /100%;
+    display: block;
+    width:10%;
+    height: 20%;
+    right: 10%;
+    top: 5%;
+    cursor: pointer;
+    position: absolute;
+}
+/*再来一局*/
+.gameOverBtn{
+    width: 60%;
+    cursor: pointer;
+    top: 50%;
+    left: 20%;
+    /*margin: 0 auto;*/
+    height: 110px;
+
+    position: absolute;
+    background: url("../images/再来一局.png")no-repeat center/100%;
+}
+.aboutWe li{
+    font-size: 30px;
+    font-family: 华康雅宋体W9;
+    text-align: left;
+    color: #fff;
+    padding-top: 50px;
+    text-indent: 2em;
+
+    height: 40px;
+    border-radius: 20px;
+    /*list-style:none;*/
+    /*border-bottom: 1px solid #ccc;*/
+}
+.getGameBtn{
+    width: 200px;
+    height: 100px;
+    position: absolute;
+    left: 0;
+    z-index: 1200;
+    top: 72%;
+    cursor: pointer;
+    background: url("../images/进入游戏.png") no-repeat 0 0 / 100% 100%;
+}
+.aboutBtn{
+    width: 200px;
+    height: 100px;
+    right: 0;
+    cursor: pointer;
+    position: absolute;
+    z-index: 1200;
+    top: 72%;
+    background: url("../images/关于我们.png") no-repeat 0 0 / 100% 100%;
+}
+.beginGameBtn{
+    width: 284px;
+    cursor: pointer;
+    height: 128px;
+    position: absolute;
+    z-index: 99999;
+    top: 80%;
+    left: 0;
+    display: none;
+    background: url("../images/开始游戏.png") no-repeat 0 0 / 100% 100%;
+}
+/*动画小人*/
+.smallChild{
+    background: url("../images/小人1.png") no-repeat center center / 80%;
+    width: 100px;
+    height: 200px;
+    position: absolute;
+}
+.moveImg{
+    margin: 0 auto;
+    position: absolute;
+    display: none;
+    height: 200px;
+    width: 200px;
+    right: 400px;
+    top: 500px;
+    /*transform: rotateY(180deg);*/
+    z-index: 99999;
+
+}
+.talkCase{
+    display: none;
+}
+/*小人聊天框*/
+.talkCase{
+    text-align: center;
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    line-height: 40px;
+    text-indent: 10px;
+    background: url("../images/alert.png")no-repeat;
+}
+
+/*要不起*/
+#PromptBox{
+    width: 300px;
+    height: 180px;
+    /*background: #000;*/
+    display: none;
+    position: absolute;
+    left: 100px;
+    top: 200px;
+    z-index: 999;
+
+}
+.hideBox{
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+    z-index: 98998;
+}
+#PromptBox div{
+    display: none;
+    color: #fff;
+    width: 300px;
+    height: 180px;
+    position: absolute;
+    z-index: 1000;
+    font-size: 32px;
+    line-height: 180px;
+    text-align: center;
+    /*background: rgba(0,0,0,.5);*/
+}
+/*要不起提示框*/
+.passBox{
+    background: url("../images/要不起.png") no-repeat center/50%;
+    opacity: 0.8;
+}
+/*出牌错误提示框*/
+.wrongBox{
+    background: url("../images/此路不通.png") no-repeat center/70%;
+    opacity: 0.8;
+}
+/*.wrongBox{*/
+    /*background: url("../images/此路不通.png") no-repeat;*/
+    /*width: 200px;*/
+    /*height: 100px;*/
+    /*position: absolute;*/
+/*}*/
+.autoText{
+    position: absolute;
+    right: 50px;
+    bottom: 100px;
+    color: #fff;
+    /*border: 1px dashed #fff;*/
+}
+/*机器人开关*/
+.autoOutPoker{
+    cursor: pointer;
+    width: 115px;
+    height: 42px;
+    position: absolute;
+    right: 0px;
+    bottom: 20px;
+    background: url("../images/设置1.png")no-repeat;
+}
+.on{
+    background: url("../images/设置2.png")no-repeat;
+}

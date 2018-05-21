@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+    <title>斗地主</title>
+    <link rel="stylesheet" href="./css/css.css">
+    <link rel="stylesheet" href="./css/flashanimation.css">
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./js/game.js"></script>
+    <script src="js/AI提示.js"></script>
+</head>
+<body>
+<div class="left">
+    <div class="btnTotal" style="transform: rotate(90deg); top: 430px; left: 120px;">
+        <div class="btnLandlord"></div>
+        <div class="passLand"></div>
+        <div class="time"></div>
+    </div>
+    <div class="btnTotal2" style="transform: rotate(90deg); top: 430px; left: 120px;">
+        <div class="outPoker"></div>
+        <div class="passPoker"></div>
+        <div class="tip"></div>
+        <div class="time1"></div>
+    </div>
+    <ul class="play_1 play"></ul>
+    <div class="play0_Img">
+        <div class="branch" style="top: -40px; left: -65px">积分:
+            <span></span>
+        </div>
+    </div>
+</div>
+<div class="mid">
+    <div class="mid_top">
+
+        <ul class="landPoker"></ul>
+        <ul class="all_poker">
+            <!--<li class="back"></li> -->
+        </ul>
+    </div>
+    <div class="mid_end">
+        <div class="startGame"></div>
+        <div class="btnTotal">
+            <div class="btnLandlord"></div>
+            <div class="passLand"></div>
+            <div class="time"></div>
+        </div>
+        <div class="btnTotal2">
+            <div class="outPoker"></div>
+            <div class="passPoker"></div>
+            <div class="tip"></div>
+            <div class="time1"></div>
+        </div>
+        <ul class="play_2 play"></ul>
+        <div class="play1_Img">
+            <div class="branch">积分:
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="right">
+    <div class="btnTotal" style="transform: rotate(270deg); top: 430px; right: 120px;">
+        <div class="btnLandlord"></div>
+        <div class="passLand"></div>
+        <div class="time"></div>
+    </div>
+    <div class="btnTotal2" style="transform: rotate(270deg); top: 430px; right: 200px;">
+        <div class="outPoker"></div>
+        <div class="passPoker"></div>
+        <div class="tip"></div>
+        <div class="time1"></div>
+    </div>
+    <ul class="play_3 play"></ul>
+    <div class="play2_Img">
+        <div class="branch" style="top: -40px; left: 0px">
+            积分:
+            <span></span>
+        </div>
+    </div>
+
+</div>
+<div class="moveImg">
+    <div class="smallChild"></div>
+    <div class="talkCase">
+    </div>
+</div>
+<!--游戏动画-->
+<div id="effects">
+    <div class="straight"></div>
+    <div class="evenOn"></div>
+    <div class="plane"></div>
+    <div class="bomb"></div>
+    <div class="floor"></div>
+    <div class="bombKing"></div>
+</div>
+
+
+<div class="beginGame">
+    <!--一开始的游戏界面-->
+    <img class="getGame" src="images/小卖部.jpg">
+    <!--点击进入游戏后出现下面的-->
+    <div class="farmer"></div>
+    <div class="landlord"></div>
+
+</div>
+<div class="btnBG">
+    <div class="getGameBtn"></div>
+    <div class="aboutBtn"></div>
+</div>
+<ul class="aboutWe">
+    <a href="#" class="gameChoseBtn"></a>
+    <li>范鸿楷</li>
+    <li>王德汉</li>
+    <li>黎宁</li>
+</ul>
+
+
+<div class="beginGameBtn"></div>
+<div class="hideBox">
+    <div class="gameOver">
+        <div class="well"></div>
+        <div class="gameOverBtn"></div>
+        <a href="#" class="gameChoseBtn"></a>
+    </div>
+</div>
+<div id="PromptBox">
+    <div class="passBox"></div>
+    <div class="wrongBox"></div>
+</div>
+<div class="bottomTotal">底分:
+    <span>0</span>
+</div>
+
+
+<!--音乐音效-->
+<div class="music" style="display: none">
+    <!--A到大王语音-->
+    <audio src="music/1.ogg"></audio>       <!--0-->
+    <audio src="music/2.ogg"></audio>       <!--1-->
+    <audio src="music/3.ogg"></audio>       <!--2-->
+    <audio src="music/4.ogg"></audio>       <!--3-->
+    <audio src="music/5.ogg"></audio>       <!--4-->
+    <audio src="music/6.ogg"></audio>       <!--5-->
+    <audio src="music/7.ogg"></audio>       <!--6-->
+    <audio src="music/8.ogg"></audio>       <!--7-->
+    <audio src="music/9.ogg"></audio>       <!--8-->
+    <audio src="music/10.ogg"></audio>       <!--9-->
+    <audio src="music/11.ogg"></audio>       <!--10-->
+    <audio src="music/12.ogg"></audio>       <!--11-->
+    <audio src="music/13.ogg"></audio>       <!--12-->
+    <audio src="music/14.ogg"></audio>       <!--13-->
+    <audio src="music/15.ogg"></audio>       <!--14-->
+    <!--对子语音-->
+    <audio src="music/dui1.ogg"></audio>       <!--15-->
+    <audio src="music/dui2.ogg"></audio>       <!--16-->
+    <audio src="music/dui3.ogg"></audio>       <!--17-->
+    <audio src="music/dui4.ogg"></audio>       <!--18-->
+    <audio src="music/dui5.ogg"></audio>       <!--19-->
+    <audio src="music/dui6.ogg"></audio>       <!--20-->
+    <audio src="music/dui7.ogg"></audio>       <!--21-->
+    <audio src="music/dui8.ogg"></audio>       <!--22-->
+    <audio src="music/dui9.ogg"></audio>       <!--23-->
+    <audio src="music/dui10.ogg"></audio>       <!--24-->
+    <audio src="music/dui11.ogg"></audio>       <!--25-->
+    <audio src="music/dui12.ogg"></audio>       <!--26-->
+    <audio src="music/dui13.ogg"></audio>       <!--27-->
+    <!-- 抢地主 -->
+    <audio src="music/抢地主.ogg"></audio>       <!--28-->
+    <audio src="music/不抢.ogg"></audio>       <!--29-->
+
+    <audio src="music/过.ogg"></audio>       <!--30-->
+    <audio src="music/要不起.ogg"></audio>       <!--31-->
+
+    <audio src="music/顺子.ogg"></audio>       <!--32-->
+    <audio src="music/连对.ogg"></audio>       <!--33-->
+    <audio src="music/飞机.ogg"></audio>       <!--34-->
+
+    <audio src="music/三带一.ogg"></audio>       <!--35-->
+    <audio src="music/三带一对.ogg"></audio>       <!--36-->
+
+    <audio src="music/四带两对.ogg"></audio>       <!--37-->
+    <audio src="music/四带二.ogg"></audio>       <!--38-->
+
+    <audio src="music/炸弹.ogg"></audio>       <!--39-->
+    <audio src="music/王炸.ogg"></audio>       <!--40-->
+
+    <audio src="music/我就一张牌了.ogg"></audio>                <!--41-->
+    <audio src="music/我就两张牌了，小心点.ogg"></audio>         <!--42-->
+    <audio src="music/快点吧，我等到花儿都谢了.mp3"></audio>     <!--43-->
+    <audio src="music/加倍.ogg"></audio>                       <!--44-->
+    <audio src="music/不加倍.ogg"></audio>                     <!--45-->
+    <audio src="music/斗地主背景音乐.mp3"></audio>
+    <audio src="music/发牌.mp3"></audio>
+</div>
+<!-- 18+28=46   0-45-->
+<div class="autoText">
+    <div class="autoOutPoker" ></div>
+    <span>机器人开启中...</span>
+</div>
+
+
+</body>
+</html>

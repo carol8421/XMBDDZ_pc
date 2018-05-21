@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //√方法：查找存在的牌型---?我都有什么 我能攒什么牌----------
+    // Obj 进入的牌型数组 代表一组牌 单牌中 有 3个属性 num 是牌面数值 A对应14，2对应15 小王对应 16 大王17
+    // 返回 一个对象 其中 算出 这幅牌中 有没有火箭 单牌都是那些 对子都是那些
+    var SerCh = function (Obj) {
+        if (Obj == null) return null;
+        var Len = Obj.length;
+        var Ars = PxFux(Obj, 1);//按大到小排序
+        var Huo = false;       //是否存在火箭---
+        var Dan = new Array(); //单牌
+        var Dui = new Array(); //对子
+        var San = new Array(); //三张
+        var Siz = new Array(); //四张
+        var Sun = new Array(); //单顺
+        var Sun2 = new Array();//双顺
+        var Sun3 = new Array();//三顺
+        //在找牌中我们不必要 找 4带1 4带2 或者 3带1 等等 因为这样的牌 待出牌的时候根据单牌数量会自己凑出
+
+        if (Len > 1 && Ars[0].number == 14 && Ars[1].number == 14) Huo = true;  //牌面中已经排序过了 所以 如果有火箭 就在第1 和第2张中
+        for (var i = 0; i < Len; i++) {
+            if (Dan.length == 0 || Ars[i].number != Dan[Dan.length - 1]) //如果没有加入 和 加入的不重复 就吧单牌加入进去
+            {
+                if (!(Huo && Ars[i].key == 4)) Dan.push(Ars[i].number);
+            }
+        }
+        for (var i = 0; i < Len - 1; i++)
+            if (Ars[i].number == Ars[i + 1].number) {
+
+            if (Dui.length == 0 || Ars[i].number != Dui[Dui.length - 1]) Dui.push(Ars[i].number);
+            i++;
+        } //类似加入 对子
+        for (var i = 0; i < Len - 2; i++) if (Ars[i].number == Ars[i + 1].number && Ars[i + 2].number == Ars[i].number) {
+            if (San.length == 0 || Ars[i].number != San[San.length - 1]) San.push(Ars[i].number);
+            i += 2;
+        }//加入3张
+        for (var i = 0; i < Len - 3; i++)
+            if (Ars[i].number == Ars[i + 1].number && Ars[i + 2].number == Ars[i].number && Ars[i + 3].number == Ars[i].number)
+            {
+                if (Siz.length == 0 || Ars[i].number != Siz[Siz.length - 1]) Siz.push(Ars[i].number);
+                i += 3;
+            }//加入4张
+        //查找顺子的最大最小数------
+        // 顺子中 我们只要找出 最大的 Max 最小的 Len 长度 val 是一个遍历出所有能抽成顺的集合
+
+
+        for (var i = 0; i < Dan.length; i++) {
+            if (Dan[i] > 12) continue; //A以上的不能顺
+            if (Dan[i] < 4) break;     //开头是 7 以下的也不能顺
+            for (var k = i; k < Dan.length; k++) {
+                var N = k + 1;
+                if (N == Dan.length || Dan[i] - Dan[N] != N - i) {
+                    var len = N - i;
+                    if (len > 4) {
+                        var val = GetSun1List(Dan[i], Dan[k]);
+                        Sun.push({Max: Dan[i], Min: Dan[k], Len: len, nlen: len, val: val})
+                    };
+                    i = k;
+                    break;
+                }
+            }
+        }
+        //找双顺
+        for (var i = 0; i < Dui.length; i++) {
+            if (Dui[i] > 14) continue;
+            if (Dui[i] < 5) break;
+            for (var k = i; k < Dui.length; k++) {
+                var N = k + 1;
+                if (N == Dui.length || Dui[i] - Dui[N] != N - i) {
+                    var len = N - i;
+                    if (len > 2) {
+                        var val = GetSun2List(Dui[i], Dui[k]);
+                        Sun2.push({Max: Dui[i], Min: Dui[k], Len: len, nlen: len * 2, val: val})
+                    }
+                    ;
+                    i = k;
+                    break;
+                }
+            }
+        }
+        //找三顺
+        for (var i = 0; i < San.length; i++) {
+            if (San[i] > 14) continue;
+            if (San[i] < 4) break;
+            for (var k = i; k < San.length; k++) {
+                var N = k + 1;
+                if (N == San.length || San[i] - San[N] != N - i) {
+                    var len = N - i;
+                    if (len > 1) {
+                        var val = GetSun3List(San[i], San[k]);
+                        Sun3.push({Max: San[i], Min: San[k], Len: len, nlen: len * 3, val: val});
+                    }
+                    i = k;
+                    break;
+                }
+            }
+        }
+        return {Huo: Huo, Dan: Dan, Dui: Dui, San: San, Siz: Siz, Sun: Sun, Sun2: Sun2, Sun3: Sun3};
+    }
+    // 在这里 处理机器人赞牌的函数
+    //
+    //     [c-sharp] view plain copy
+    //√方法：机器人赞牌AI---------------
+    var ZhanPai = function (Arr) {
+        var Less = PxFux(Arr, 1);//先对进入的牌进行一次高低排序
+        var Ts = SerCh(Less);   //找出有什么牌
+        var Splt = new Array(); //提取块数组====
+        if (Ts.Huo) {
+            var Tobj = MChouPai([17, 16], Less);
+            if (Tobj != null) {
+                Splt.push({data: Tobj.Splt, type: 14, max: 17, len: 2});
+                Less = Tobj.Less;
+            }
+        }
+        //如果有火箭 把火箭加入到我们线路的第一步
+        //这样 我们认为 机器人 赞出了他的一步 火箭 基本上不参与其他牌型的排列 默认是单独的一步！
+        for (var i = 0; i < Ts.Siz.length; i++) {
+            var N = Ts.Siz[i];
+            var Tobj = MChouPai([N, N, N, N], Less);
+            if (Tobj != null) {
+                Splt.push({data: Tobj.Splt, type: 13, max: N, len: 4});
+                Less = Tobj.Less;
+            }
+        }
+        //如果有炸弹 也加入为一步 也不让他加入其他牌型排列！
+        //我们认为保留炸弹是最优牌型的首选
+        if (Ts.San.length > 0 && Ts.San[0] == 15) {
+            var Tobj = MChouPai([15, 15, 15], Less);
+            if (Tobj != null) {
+                Splt.push({data: Tobj.Splt, type: 3, max: 15, len: 3});
+                Less = Tobj.Less;
+            }
+        }
+        if (Ts.Dui.length > 0 && Ts.Dui[0] == 15) {
+            var Tobj = MChouPai([15, 15], Less);
+            if (Tobj != null) {
+                Splt.push({data: Tobj.Splt, type: 2, max: 15, len: 2});
+                Less = Tobj.Less;
+            }
+        }
+        // 3个2 和 对2 基本上不参与顺子 的排列 所以 也可以加为一单独步骤
+
+        var Obj = {Splt: Splt, Less: Less};// OK 到这里 我们要把 加入到 步骤里的片段 和 剩下的值绑定起来 交给 处理 顺子 和 3张 对牌 单张的 遍历函数去处理了！
+        var AllPais = GetAllPai(Obj);//得到 遍历的路线数组(优化过的算法 使遍历不要浪费太多CPU)
+        return GetTaMax(AllPais);// 得到 一条 机器人认为最合适的路线
+    }
+
+    //抽出可能出现第一个单顺的所有遍历 返回 抽出的顺子片段和剩余的杂牌，有多少种单顺能出现就返回多少种路线
+    function ChouChuSun(Obj) {
+        var Ts = SerCh(Obj.Less);
+        if (Ts.Sun.length == 0) return null;
+        var ZParr = new Array();
+        for (var i = 0; i < Ts.Sun.length; i++) {
+            var SunObj = Ts.Sun[i]; //顺的对象------
+            for (var n = 0; n < SunObj.val.length; n++) {
+                var nObj = MChouPai(SunObj.val[n], Obj.Less);
+                if (nObj != null) {
+                    var nSplt = {data: nObj.Splt, type: 8, max: nObj.Splt[0].number, len: nObj.Splt.length};
+                    nObj.Splt = Obj.Splt.concat([nSplt]);
+                    ZParr.push(nObj);
+                }
+            }
+        }
+        if (ZParr.length == 0) return null;
+        return ZParr;
+    }
+
+    //抽出可能出现第一个双顺的所有遍历 返回 抽出的顺子片段和剩余的杂牌，有多少种双顺能出现就返回多少种路线
+
+    function ChouChu2Sun(Obj) {
+        var Ts = SerCh(Obj.Less);
+        if (Ts.Sun2.length == 0) return null;
+        var ZParr = new Array();
+        for (var i = 0; i < Ts.Sun2.length; i++) {
+            var SunObj = Ts.Sun2[i]; //顺的对象------
+            for (var n = 0; n < SunObj.val.length; n++) {
+                var nObj = MChouPai(SunObj.val[n], Obj.Less);
+                if (nObj != null) {
+                    var nSplt = {data: nObj.Splt, type: 9, max: nObj.Splt[0].number, len: nObj.Splt.length};
+                    nObj.Splt = Obj.Splt.concat([nSplt]);
+                    ZParr.push(nObj);
+                }
+            }
+        }
+        if (ZParr.length == 0) return null;
+        return ZParr;
+    }
+
+    //抽出可能出现第一个3顺的所有遍历 返回 抽出的顺子片段和剩余的杂牌，有多少种3顺能出现就返回多少种路线
+
+    function ChouChu3Sun(Obj) {
+        var Ts = SerCh(Obj.Less);
+        if (Ts.Sun3.length == 0) return null;
+        var ZParr = new Array();
+        for (var i = 0; i < Ts.Sun3.length; i++) {
+            var SunObj = Ts.Sun3[i]; //顺的对象------
+            for (var n = 0; n < SunObj.val.length; n++) {
+                var nObj = MChouPai(SunObj.val[n], Obj.Less);
+                if (nObj != null) {
+                    var nSplt = {data: nObj.Splt, type: 10, max: nObj.Splt[0].number, len: nObj.Splt.length};
+                    nObj.Splt = Obj.Splt.concat([nSplt]);
+                    ZParr.push(nObj);
+                }
+            }
+        }
+        if (ZParr.length == 0) return null;
+        return ZParr;
+    }
+
+    //抽出可能出现所有单顺的所有遍历 返回 抽出的顺子片段和剩余的杂牌，有多少种单顺能出现就返回多少种路线
+
+    function GetAllSunLess(Obj) {
+        if (Obj.Less.length < 5) return null;
+        var ShunArr = new Array();
+        var nObj = ChouChuSun(Obj);
+        if (nObj != null) {
+            ShunArr = ShunArr.concat(nObj);
+            for (var i = 0; i < nObj.length; i++) {
+                var List = GetAllSunLess(nObj[i]);
+                if (List != null) ShunArr = ShunArr.concat(List);
+            }
+        }
+        if (ShunArr.length == 0) return null;
+        return ShunArr;
+    }
+
+    //抽出可能出现所有2顺的所有遍历 返回 抽出的顺子片段和剩余的杂牌，有多少种2顺能出现就返回多少种路线
+    function GetAll2SunLess(Obj) {
+        if (Obj.Less.length < 6) return null;
+        var ShunArr = new Array();
+        var nObj = ChouChu2Sun(Obj);
+        if (nObj != null) {
+            ShunArr = ShunArr.concat(nObj);
+            for (var i = 0; i < nObj.length; i++) {
+                var List = GetAll2SunLess(nObj[i]);
+                if (List != null) ShunArr = ShunArr.concat(List);
+            }
+        }
+        if (ShunArr.length == 0) return null;
+        return ShunArr;
+    }
+
+    //抽出可能出现所有3顺的所有遍历 返回 抽出的顺子片段和剩余的杂牌，有多少种3顺能出现就返回多少种路线
+    function GetAll3SunLess(Obj) {
+        if (Obj.Less.length < 6) return null;
+        var ShunArr = new Array();
+        var nObj = ChouChu3Sun(Obj);
+        if (nObj != null) {
+            ShunArr = ShunArr.concat(nObj);
+            for (var i = 0; i < nObj.length; i++) {
+                var List = GetAll3SunLess(nObj[i]);
+                if (List != null) ShunArr = ShunArr.concat(List);
+            }
+        }
+        if (ShunArr.length == 0) return null;
+        return ShunArr;
+    }
+
+    //整合 几种出现的顺子交互配对---
+    function GetAllSun(Obj) {
+        if (Obj.Less.length < 5) return null;
+        var ShunArr = new Array();
+        //获得 单顺---
+        var D_nObj = GetAllSunLess(Obj);
+        if (D_nObj != null) {
+            ShunArr = ShunArr.concat(D_nObj);
+            for (var i = 0; i < D_nObj.length; i++) {
+                var List = GetAllSun(D_nObj[i]);
+                if (List != null) ShunArr = ShunArr.concat(List);
+            }
+        }
+        //获得 双顺---
+        var D_nObj = GetAll2SunLess(Obj);
+        if (D_nObj != null) {
+            ShunArr = ShunArr.concat(D_nObj);
+            for (var i = 0; i < D_nObj.length; i++) {
+                var List = GetAllSun(D_nObj[i]);
+                if (List != null) ShunArr = ShunArr.concat(List);
+            }
+        }
+        //获得 三顺---
+        var D_nObj = GetAll3SunLess(Obj);
+        if (D_nObj != null) {
+            ShunArr = ShunArr.concat(D_nObj);
+            for (var i = 0; i < D_nObj.length; i++) {
+                var List = GetAllSun(D_nObj[i]);
+                if (List != null) ShunArr = ShunArr.concat(List);
+            }
+        }
+        if (ShunArr.length == 0) return null;
+        return ShunArr;
+    }
+
+    // 处理完顺子后 再处理剩下的杂牌
+    function GetAllLast(Obj) {
+        var Less = Obj.Less.slice(0);
+        var Splt = Obj.Splt.slice(0);
+        if (Less.length == 0) return Splt;
+        var Ts = SerCh(Obj.Less);
+        for (var i = 0; i < Ts.San.length; i++) {
+            var N = Ts.San[i];
+            if (N == 15) continue;
+            var Tobj = MChouPai([N, N, N], Less);
+            if (Tobj != null) {
+                Splt.push({data: Tobj.Splt, type: 3, max: N, len: 3});
+                Less = Tobj.Less;
+            }
+        }
+        for (var i = 0; i < Ts.Dui.length; i++) {
+            var N = Ts.Dui[i];
+            if (N == 15) continue;
+            var Tobj = MChouPai([N, N], Less);
+            if (Tobj != null) {
+                Splt.push({data: Tobj.Splt, type: 2, max: N, len: 2});
+                Less = Tobj.Less;
+            }
+        }
+        for (var i = 0; i < Less.length; i++) {
+            Splt.push({data: [Less[i]], type: 1, max: Less[i].number, len: 1});
+        }
+        Less.length = 0;
+        return Splt;
+    }
+
+    function GetAllPai(Obj) {
+        var ShunArr = new Array();
+        ShunArr.push(GetAllLast(Obj));
+        var Suns = GetAllSun(Obj);
+        if (Suns != null)
+            for (var i = 0; i < Suns.length; i++) {
+                var Item = GetAllLast(Suns[i]);
+                ShunArr.push(Item);
+            }
+        return ShunArr;
+    }
+
+    function GetTaMax(Arr) {
+        var MkObj = null;
+        var Len = Arr.length;
+        for (var i = 0; i < Len; i++) {
+            var Tp = Arr[i];
+            var Clen = Tp.length;
+            var Dlen = 0;
+            for (var k = 0; k < Clen; k++) {
+                //Pn 取值 正常单牌的权值是 4
+                if (Tp[k].type == 1) {
+                    // 如果是2以上 我们认为 这个单牌有能力自己出掉-- 还可以带一张牌
+                    if (Tp[k].max >= 15) {
+                        Dlen -= 4;
+                    }
+                    //自己可以出掉---
+                    else if (Tp[k].max >= 11) {
+                    }
+                    else if (Tp[k].max >= 7) {
+                        Dlen += 4;
+                    }
+                    //小过 7 的牌 我们认为应该要带出去才行
+                    else {
+                        Dlen += 8;
+                    }
+                }
+                if (Tp[k].type == 2) {
+                    // 如果是对2以上 我们认为 这个单牌至少可以发一张单牌--
+                    if (Tp[k].max >= 15) {
+                        Dlen -= 8;
+                    }
+                    //如果这个对牌 是公仔牌和A 我们认为 这个牌还不是很烂
+                    else if (Tp[k].max >= 11) {
+                        Dlen -= 2;
+                    }
+                    else if (Tp[k].max >= 7) {
+                        Dlen += 2;
+                    }
+                    //小过 7 的牌 我们认为应该要带出去才行
+                    else {
+                        Dlen += 6;
+                    }
+                }
+                if (Tp[k].type == 3) {
+                    // 如果是对2以上 我们认为 这个单牌至少可以发一张单牌--
+                    if (Tp[k].max >= 15) {
+                        Dlen -= 12;
+                    }
+                    if (Tp[k].max >= 11) {
+                        Dlen -= 9;
+                    }
+                    else if (Tp[k].max >= 7) {
+                        Dlen -= 6;
+                    }
+                    else {
+                        Dlen -= 4;
+                    }
+                }
+                if (Tp[k].type == 10) {
+                    Dlen -= 5;
+                    if (Tp[k].len >= 15) Dlen -= 10;
+                    if (Tp[k].len = 12) Dlen -= 9;
+                    if (Tp[k].len = 9) Dlen -= 7;
+                    if (Tp[k].len = 6) Dlen -= 4;
+                }
+                if (Tp[k].type == 9) {
+                    Dlen -= 1;
+                }
+                if (Tp[k].type == 8) {
+                    Dlen -= 1;
+                }
+                if (Tp[k].type == 13) {
+                    Dlen -= 20;
+                }
+                if (Tp[k].type == 14) {
+                    Dlen -= 20;
+                }
+            }
+            Tp.Pn = (Clen * 10) + Dlen;
+            if (MkObj == null || Tp.Pn < MkObj.Pn) MkObj = Tp;
+        }
+        MkObj.Pn = MkObj.Pn < 0 ? 0 : MkObj.Pn;
+        SetTlInfo(MkObj);
+        return MkObj;
+    }
+</script>
+</body>
+</html>
